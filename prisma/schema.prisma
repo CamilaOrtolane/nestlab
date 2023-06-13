@@ -10,16 +10,118 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+model Login {
+  id_log Int @id @default(autoincrement())
+  usuario_log String?
+  senha_log String?
+  posts Perfil_Usuario[]
 }
+
+model Perfil_Usuario {
+  id_pu    Int     @id @default(autoincrement())
+  nome_per String?
+  email String?  @unique
+  telefone_per Int
+  data_nas_per DateTime
+  tipo_per String
+  funcionalidade_usu String
+  posts Post[] //só para exemplo. Gerado pelo próprio Prisma
+  favo Favorito[]
+  loginId Int
+  loginRef Login @relation(fields: [loginId], references: [id_log])
+  seguir Segue[]
+  avalia Avaliacao[]
+  coment Comentarios[]
+}
+
+model Fanfic {
+  id_fan Int @id @default(autoincrement())
+  nome_fan String?
+  sinopse_fan String?
+  capa_fan String
+  conto_original_fan String
+  autor_fan String
+  pseudonimo_fan String
+  classificacao_indi_fan String
+  favo Favorito[]
+  avalia Avaliacao[]
+  coment Comentarios[]
+  cap Capitulos[]
+  categoFic Categoria_Fic[]
+}
+
+model Favorito {
+  id_fav Int @id @default(autoincrement())
+  nome_fav String?
+  perfilUsuId Int
+  perfilUsu Perfil_Usuario @relation(fields: [perfilUsuId], references: [id_pu])
+  fanficId Int 
+  fanFic Fanfic @relation(fields: [fanficId], references: [id_fan])
+}
+
+model Segue {
+  id_seg Int @id @default(autoincrement())
+  seguindo_seg String?
+  seguidor_seg String?
+  perfilUsuId Int 
+  perfilUsu Perfil_Usuario @relation(fields: [perfilUsuId], references: [id_pu])
+}
+
+model Avaliacao{
+  id_ava Int @id @default(autoincrement())
+  nota_ava Decimal
+  total_ava Decimal
+  perfilUsuId Int
+  perfilUsu Perfil_Usuario @relation(fields: [perfilUsuId], references: [id_pu])
+  fanficId Int
+  fic Fanfic @relation(fields: [fanficId], references: [id_fan])
+  
+}
+
+model Comentarios {
+  id_com Int @id @default(autoincrement())
+  conteudo_com String?
+  resposta_com String?
+  perfilUsuId Int
+  perfilUsu Perfil_Usuario @relation(fields: [perfilUsuId], references: [id_pu])
+  fanficId Int
+  fanfic Fanfic @relation(fields: [fanficId], references: [id_fan])
+
+}
+
+model Capitulos {
+  id_cap Int @id @default(autoincrement())
+  titulos_cap String
+  capa_cap String
+  conteudo_cap String
+  numero_cap Int
+  fanficId Int
+  fanfic Fanfic @relation(fields: [fanficId], references: [id_fan])
+}
+
+model Categoria{
+  id_cat Int @id @default(autoincrement())
+  nome_cat String?
+  cateFic Categoria_Fic[]
+}
+
+model Categoria_Fic{
+  id_cf Int @id @default(autoincrement())
+  fanficId Int
+  fanfic Fanfic @relation(fields: [fanficId], references: [id_fan])
+  categoId Int
+  catego Categoria @relation(fields: [categoId], references: [id_cat])
+}
+
+
+
+
+
 model Post {
   id        Int     @id @default(autoincrement())
   title     String
   published Boolean @default(true)
   authorId  Int
-  author    User    @relation(fields: [authorId], references: [id])
+  author    Perfil_Usuario    @relation(fields: [authorId], references: [id_pu])
+
 }

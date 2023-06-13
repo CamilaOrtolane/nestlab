@@ -17,6 +17,11 @@ model Login {
   posts Perfil_Usuario[]
 }
 
+// enum funcionalidade {   
+ // Leitor
+ // Escritor
+//}
+
 model Perfil_Usuario {
   id_pu    Int     @id @default(autoincrement())
   nome_per String?
@@ -24,8 +29,7 @@ model Perfil_Usuario {
   telefone_per Int
   data_nas_per DateTime
   tipo_per String
-  funcionalidade_usu String
-  posts Post[] //só para exemplo. Gerado pelo próprio Prisma
+  funcionalidade_usu String 
   favo Favorito[]
   loginId Int
   loginRef Login @relation(fields: [loginId], references: [id_log])
@@ -33,6 +37,7 @@ model Perfil_Usuario {
   avalia Avaliacao[]
   coment Comentarios[]
 }
+
 
 model Fanfic {
   id_fan Int @id @default(autoincrement())
@@ -113,15 +118,9 @@ model Categoria_Fic{
   catego Categoria @relation(fields: [categoId], references: [id_cat])
 }
 
-
-
-
-
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  published Boolean @default(true)
-  authorId  Int
-  author    Perfil_Usuario    @relation(fields: [authorId], references: [id_pu])
-
+model Biblioteca{
+  id_bb Int @id @default(autoincrement())
+  favoritos_bb String
+  salvos_bb String
+  lidos_bb String
 }
